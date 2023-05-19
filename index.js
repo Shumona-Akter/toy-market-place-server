@@ -14,7 +14,7 @@ app.use(express.json())
 
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://kids-dreams:IQZasghmsl0avcH7@cluster0.tjvax7z.mongodb.net/?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.tjvax7z.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -29,12 +29,37 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
-    // Send a ping to confirm a successful connection
+  // gallaery db
+    const galleryCollection = client.db("kids-dreams").collection("gallery")
+    // catagory db
+    const catagoryCollection = client.db("kids-dreams").collection("catagory")
+    // love products db
+    const loveProductCollection = client.db("kids-dreams").collection("love_product")
+
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
+
+    // galary
+    app.get("/gallery",async (req, res)=>{
+      const cursor = galleryCollection.find()
+      const result = await cursor.toArray()
+      res.send(result)
+    })
+    // catagory
+    app.get("/catagory",async (req, res)=>{
+      const cursor = catagoryCollection.find()
+      const result = await cursor.toArray()
+      res.send(result)
+    })
+    // love 
+    app.get("/love",async (req, res)=>{
+      const cursor = loveProductCollection.find()
+      const result = await cursor.toArray()
+      res.send(result)
+    })
   } finally {
     // Ensures that the client will close when you finish/error
-    await client.close();
+    // await client.close();
   }
 }
 run().catch(console.dir);
@@ -42,7 +67,6 @@ run().catch(console.dir);
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
-console.log(process.env.SECRET_KEY)
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
  
