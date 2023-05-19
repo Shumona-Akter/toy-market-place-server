@@ -35,8 +35,12 @@ async function run() {
     const catagoryCollection = client.db("kids-dreams").collection("catagory")
     // love products db
     const loveProductCollection = client.db("kids-dreams").collection("love_product")
-    // love cars db
+    //  cars db
     const carsCollection = client.db("kids-dreams").collection("Cars")
+    //  track db
+    const trackCollection = client.db("kids-dreams").collection("track")
+    //  cars db
+    const policeCarsCollection = client.db("kids-dreams").collection("police")
 
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
@@ -62,6 +66,18 @@ async function run() {
     // cars 
     app.get("/car",async (req, res)=>{
       const cursor = carsCollection.find()
+      const result = await cursor.toArray()
+      res.send(result)
+    })
+    // cars 
+    app.get("/track",async (req, res)=>{
+      const cursor = trackCollection.find()
+      const result = await cursor.toArray()
+      res.send(result)
+    })
+    // cars 
+    app.get("/police",async (req, res)=>{
+      const cursor = policeCarsCollection.find()
       const result = await cursor.toArray()
       res.send(result)
     })
