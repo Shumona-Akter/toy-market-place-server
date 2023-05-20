@@ -83,6 +83,28 @@ async function run() {
       res.send(result)
     })
 
+       // get my toys
+       app.get("/addToys",async (req, res)=>{
+         if(req.query?.email){
+          let query = {}
+          query ={email: req.query.email }
+          const result =await addToysCollection.find(query).sort({price : -1}).toArray()
+          return res.send(result)
+        }
+        const cursor = addToysCollection.find()
+        const result = await cursor.limit(20).toArray()
+        res.send(result)
+      })
+
+    //    get all toys
+    // app.get("/addToys",async (req, res)=>{
+    //   const cursor = addToysCollection.find()
+    //   const result = await cursor.toArray()
+    //   res.send(result)
+    // })
+    
+
+ 
 
     app.post('/addToys', async(req, res)=>{
       const addToys = req.body;
