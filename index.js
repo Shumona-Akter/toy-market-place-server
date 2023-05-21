@@ -13,7 +13,7 @@ app.use(express.json())
 // kids-dreams
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.tjvax7z.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -82,7 +82,7 @@ async function run() {
       const result = await cursor.toArray()
       res.send(result)
     })
-
+ 
        // get my toys
        app.get("/addToys",async (req, res)=>{
          if(req.query?.email){
@@ -104,13 +104,28 @@ async function run() {
     // })
     
 
- 
+    app.get("/addToys/:id",async (req, res)=>{
+      const id = req.params.id;
+      const query = {_id : new ObjectId(id)}
+      const result = await addToysCollection.findOne(query)
+      console.log(result)
+      res.send(result)
+    })
+
 
     app.post('/addToys', async(req, res)=>{
       const addToys = req.body;
       const result = await addToysCollection.insertOne(addToys)
       res.send(result)
     })
+
+    app.delete('/addToys/:id',async (req,res)=>{
+      const id = req.params.id;
+      const query = {_id : new ObjectId(id)}
+      const result = await addToysCollection.deleteOne(query)
+      res.send(result)
+    })
+   
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
